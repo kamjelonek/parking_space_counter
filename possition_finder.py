@@ -3,14 +3,12 @@ import pickle
 import numpy as np
 import math
 
-# Function to rotate a point
 def rotate_point(cx, cy, x, y, angle):
     angle_rad = math.radians(angle)
     x_new = math.cos(angle_rad) * (x - cx) - math.sin(angle_rad) * (y - cy) + cx
     y_new = math.sin(angle_rad) * (x - cx) + math.cos(angle_rad) * (y - cy) + cy
     return int(x_new), int(y_new)
 
-# Try to load shapes, if not exist initialize empty list
 try:
     with open('carparkpos', 'rb') as f:
         shapes = pickle.load(f)
@@ -20,7 +18,6 @@ except (FileNotFoundError, EOFError):
 current_dims = (44, 102)
 current_shape = "rect"
 
-# Function to draw shapes
 def draw_shapes(image, shapes):
     for shape in shapes:
         x, y, w, h, shape_type = shape
@@ -36,7 +33,7 @@ def draw_shapes(image, shapes):
             ], np.int32)
             cv2.polylines(image, [pts], isClosed=True, color=(255, 100, 100), thickness=2)
 
-# Function to handle mouse click events
+
 def mouseClick(events, x, y, flags, params):
     global shapes
     if events == cv2.EVENT_LBUTTONDOWN:
@@ -45,11 +42,9 @@ def mouseClick(events, x, y, flags, params):
     elif events == cv2.EVENT_RBUTTONDOWN:
         shapes = [shape for shape in shapes if not (shape[0] <= x <= shape[0] + shape[2] and shape[1] <= y <= shape[1] + shape[3])]
 
-    # Save shapes to file
     with open('carparkpos', 'wb') as f:
         pickle.dump(shapes, f)
 
-# Main loop
 while True:
     image = cv2.imread('Images/parking.png')
     draw_shapes(image, shapes)
