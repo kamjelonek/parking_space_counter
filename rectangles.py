@@ -9,19 +9,36 @@ while True:
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
 
-import cv2
-
 cap = cv2.VideoCapture('Videos/parking.mp4')
 
+# Pobierz oryginalne wymiary i FPS (klatki na sekundę)
 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = int(cap.get(cv2.CAP_PROP_FPS))
 
 new_width = int(width * 0.63)
 new_height = int(height * 0.63)
 
 fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-out = cv2.VideoWriter('Videos/resized_parking3.mp4', fourcc, 20.0,
-                      (new_width, new_height))
+out = cv2.VideoWriter('Videos/resized_parking4.mp4', fourcc, fps, (new_width, new_height))
+
+while True:
+    ret, frame = cap.read()
+
+    if not ret:
+        break
+
+    resized_frame = cv2.resize(frame, (new_width, new_height))
+
+    out.write(resized_frame)
+
+cap.release()
+out.release()
+cv2.destroyAllWindows()
+
+
+
+
 
 while True:
     ret, frame = cap.read()
